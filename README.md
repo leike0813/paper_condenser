@@ -41,7 +41,10 @@
 - Stage 1 到 Stage 5 的分阶段执行契约
 - 四个核心中间工件
 - Stage 5 `final-draft.tex` 骨架初始化 helper
+- Stage 5 `rewrite-report.md` 伴随转写报告
 - 内置 LaTeX 模板 preset，包括通用 article、中文期刊和基于 `elsarticle` 的英文期刊模板
+
+运行态工件默认不会写入 Skill 包目录，而是写入当前项目目录下的 `.paper-condenser-tmp/`。
 
 当前设计中，脚本只负责确定性工作，例如：
 
@@ -80,6 +83,7 @@
   - [stage3-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage3-playbook.md)
   - [stage4-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage4-playbook.md)
   - [stage5-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage5-playbook.md)
+  - [rewrite-report-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/rewrite-report-playbook.md)
 - 如果你想了解中文/SCI 论文体例参考，看：
   - [Chinese_paper_guidance.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/Chinese_paper_guidance.md)
   - [SCI_paper_guidance.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/SCI_paper_guidance.md)
@@ -90,6 +94,12 @@
 - 发布包内 [paper-condenser/references](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references) 是运行时可被 Skill 正式引用的资料。
 
 不要把仓库根参考目录直接当成 Skill 运行资源。
+
+## 运行态工件位置
+
+- Skill 包本身是静态资产。
+- 运行过程中产生的中间工件与最终稿默认写入当前项目目录下的 `.paper-condenser-tmp/<document-slug>/`。
+- 不应把运行态工件写进 [paper-condenser](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser) 包目录内部。
 
 ## OpenSpec 状态
 
