@@ -2,13 +2,13 @@
 
 `paper_condenser` 是一个 **Agent Skill 开发项目**，目标是构建一个可发布的 Skill 包，帮助 Agent 以**交互式、阶段化**的方式，将长篇学术论文、研究报告或章节转写为符合期刊论文体例的凝缩版文稿。
 
-这不是常规软件工程仓库。它的核心产物不是 Web 服务或库，而是一个位于 [paper-condenser](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser) 的 Skill 包，其中以 [SKILL.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/SKILL.md) 作为主执行契约，并辅以少量确定性 helper scripts、模板资产和参考文档。
+这不是常规软件工程仓库。它的核心产物不是 Web 服务或库，而是一个位于 [paper-condenser](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser) 的 Skill 包，其中以 [SKILL.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/SKILL.md) 作为主执行契约，并辅以 SQLite gate-driven runtime、确定性 helper scripts、Jinja2 渲染模板、LaTeX 模板资产和参考文档。
 
 ## 项目目标
 
 - 分阶段理解用户提供的原稿
 - 提炼主题、主要工作、创新点和结构信息
-- 通过中间工件持久化原稿理解、目标设置、风格画像和凝缩方案
+- 通过数据库真源持久化原稿理解、目标设置、风格画像和凝缩方案
 - 与用户交互式确认关键决策，而不是替用户做决定
 - 仅在前置阶段全部完成后，生成最终 LaTeX 凝缩稿
 
@@ -29,29 +29,34 @@
 - [agents/openai.yaml](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/agents/openai.yaml)：Agent 接口元数据
 - [references](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references)：分阶段 playbook、工件协议和论文写作规范参考
 - [scripts](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/scripts)：确定性辅助脚本
-- [assets](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/assets)：工件模板与 LaTeX preset
+- [assets](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/assets)：中间工件渲染模板与 LaTeX preset
 
 ## 当前实现状态
 
-当前 Skill 已经具备这些能力：
+当前 Skill 已切换到 **Database SSOT & gate-driven** 范式，已经具备这些能力：
 
 - 单文件 `.tex` 原稿路径输入
-- 运行态工件目录初始化
-- Stage 1 deterministic intake
-- Stage 1 到 Stage 5 的分阶段执行契约
-- 四个核心中间工件
-- Stage 5 `final-draft.tex` 骨架初始化 helper
-- Stage 5 `rewrite-report.md` 伴随转写报告
+- 单 SQLite 运行态真源：`.paper-condenser-tmp/<document-slug>/paper-condenser.db`
+- `gate_runtime.py` + `stage_runtime.py` 双入口
+- Stage 1 到 Stage 6 的 gate-driven 状态机
+- Stage 2 的 `main_scope + aux_scopes` 双层范围模型
+- 十个只读 Markdown 视图由外部 Jinja2 模板渲染
+- Stage 6 的 section-loop drafting / count validation / user approval
+- 最终 bundle 的 DB-rendered `final-draft.tex` 与 `rewrite-report.md`
 - 内置 LaTeX 模板 preset，包括通用 article、中文期刊和基于 `elsarticle` 的英文期刊模板
 
-运行态工件默认不会写入 Skill 包目录，而是写入当前项目目录下的 `.paper-condenser-tmp/`。
+运行态文件默认不会写入 Skill 包目录，而是写入当前项目目录下的 `.paper-condenser-tmp/`。
 
 当前设计中，脚本只负责确定性工作，例如：
 
-- 初始化工件目录
-- 读取源文件
-- 统计文件信息
-- 初始化 `final-draft.tex` 骨架
+- SQLite schema 初始化
+- gate 判定与 `next_action` 输出
+- source intake 与 supporting-elements inventory 提取
+- raw main/aux scope segmentation
+- semantic source unit consolidation 的结构化写库
+- 只读视图渲染
+- 中间工件 Jinja2 模板渲染
+- 最终输出文件渲染
 
 语义理解、用户提问、方案判断和正文写作仍由 LLM 负责。
 
@@ -67,7 +72,7 @@
     ├── SKILL.md
     ├── agents/
     ├── assets/
-    │   ├── artifact-templates/
+    │   ├── render-templates/
     │   └── latex-templates/
     ├── references/
     └── scripts/
@@ -76,13 +81,18 @@
 ## 关键文档入口
 
 - 如果你想了解“Skill 怎么执行”，先看 [SKILL.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/SKILL.md)。
-- 如果你想了解“四个工件分别存什么”，看 [artifact-protocol.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/artifact-protocol.md)。
+- 如果你想了解“运行态文件与数据库的关系”，看 [artifact-protocol.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/artifact-protocol.md)。
+- 如果你想了解 runtime DB 和 gate/stage 入口，看：
+  - [runtime-database-contract.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/runtime-database-contract.md)
+  - [gate-and-stage-runtime.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/gate-and-stage-runtime.md)
 - 如果你想了解每个阶段的细化步骤，看：
+  - [stage0-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage0-playbook.md)
   - [stage1-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage1-playbook.md)
   - [stage2-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage2-playbook.md)
   - [stage3-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage3-playbook.md)
   - [stage4-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage4-playbook.md)
   - [stage5-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage5-playbook.md)
+  - [stage6-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage6-playbook.md)
   - [rewrite-report-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/rewrite-report-playbook.md)
 - 如果你想了解中文/SCI 论文体例参考，看：
   - [Chinese_paper_guidance.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/Chinese_paper_guidance.md)
@@ -98,7 +108,7 @@
 ## 运行态工件位置
 
 - Skill 包本身是静态资产。
-- 运行过程中产生的中间工件与最终稿默认写入当前项目目录下的 `.paper-condenser-tmp/<document-slug>/`。
+- 运行过程中产生的 DB、只读视图与最终稿默认写入当前项目目录下的 `.paper-condenser-tmp/<document-slug>/`。
 - 不应把运行态工件写进 [paper-condenser](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser) 包目录内部。
 
 ## OpenSpec 状态

@@ -1,0 +1,8 @@
+- [x] 补齐 OpenSpec artifacts：`proposal.md`、`design.md`、`tasks.md`、`specs/self-contained-skill-instructions/spec.md`
+- [x] 重写 `paper-condenser/SKILL.md`，让其成为自包含、完整但精简的主指令
+- [x] 在 `SKILL.md` 中加入按需加载 references 的明确规则
+- [x] 为 Stage 0-6 增加自然语言的阶段说明与完成标志
+- [x] 轻量更新 `references/stage-workflow.md` 的定位说明
+- [x] 轻量更新 `references/gate-and-stage-runtime.md` 的定位说明
+- [x] 运行 `openspec validate self-contained-skill-md`
+- [x] 运行 `quick_validate.py paper-condenser`
