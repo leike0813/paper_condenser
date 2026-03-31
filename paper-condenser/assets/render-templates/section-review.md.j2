@@ -11,6 +11,12 @@
 - Review status: `{{ section.review_status }}`
 
 ## Section Constraints
+### Section Summary
+{{ section.section_summary or "（空）" }}
+
+### Section Strategy
+{{ section.section_strategy or "（空）" }}
+
 ### Must Cover
 {% if section.must_cover %}
 {% for item in section.must_cover %}
@@ -37,6 +43,27 @@
 {% else %}
 - （空）
 {% endif %}
+
+### Figure / Table Usage
+{% if section.figure_table_usage %}
+{% for figure_table in section.figure_table_usage %}
+- {{ figure_table.element_kind }} `{{ figure_table.element_ref }}` -> `{{ figure_table.action }}`{% if figure_table.note %} | {{ figure_table.note }}{% endif %}
+{% endfor %}
+{% else %}
+- （空）
+{% endif %}
+
+### Reference Usage
+{% if section.reference_usage %}
+{% for item in section.reference_usage %}
+- {{ item }}
+{% endfor %}
+{% else %}
+- （空）
+{% endif %}
+
+### Aux Usage Rationale
+{{ section.aux_usage_rationale or "（空）" }}
 
 ## Draft
 ```tex

@@ -33,4 +33,4 @@ The runtime MUST use semantic source units as the primary provenance path for se
 
 - **WHEN** `persist_section_rewrite_plan` writes section-level plan rows
 - **THEN** the primary source bindings reference semantic units
-- **AND** Stage 6 draft provenance also binds to semantic units rather than raw segments
+- **AND** Stage 5 draft provenance also binds to semantic units rather than raw segments

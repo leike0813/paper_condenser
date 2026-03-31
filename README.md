@@ -38,10 +38,10 @@
 - 单文件 `.tex` 原稿路径输入
 - 单 SQLite 运行态真源：`.paper-condenser-tmp/<document-slug>/paper-condenser.db`
 - `gate_runtime.py` + `stage_runtime.py` 双入口
-- Stage 1 到 Stage 6 的 gate-driven 状态机
+- Stage 1 到 Stage 5 的 gate-driven 状态机，以及 `completed` 终态
 - Stage 2 的 `main_scope + aux_scopes` 双层范围模型
 - 十个只读 Markdown 视图由外部 Jinja2 模板渲染
-- Stage 6 的 section-loop drafting / count validation / user approval
+- Stage 5 的 section-loop drafting / count validation / user approval
 - 最终 bundle 的 DB-rendered `final-draft.tex` 与 `rewrite-report.md`
 - 内置 LaTeX 模板 preset，包括通用 article、中文期刊和基于 `elsarticle` 的英文期刊模板
 
@@ -92,7 +92,6 @@
   - [stage3-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage3-playbook.md)
   - [stage4-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage4-playbook.md)
   - [stage5-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage5-playbook.md)
-  - [stage6-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/stage6-playbook.md)
   - [rewrite-report-playbook.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/rewrite-report-playbook.md)
 - 如果你想了解中文/SCI 论文体例参考，看：
   - [Chinese_paper_guidance.md](/home/joshua/Workspace/Code/Skill/paper_condenser/paper-condenser/references/Chinese_paper_guidance.md)
